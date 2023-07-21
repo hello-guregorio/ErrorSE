@@ -16,7 +16,7 @@ class CrawlModulePipeline:
     def __init__(self) -> None:
         print('开始存储爬取数据')
         self.json_file = open('../data/news.rawdata', 'wb')
-        self.count_file = open('../data/newcount.txt', 'w')
+        self.count_file = open('../data/info.txt', 'w')
         self.json_exporter = JsonLinesItemExporter(
             self.json_file, ensure_ascii=False, encoding='UTF-8')
         self.json_exporter.start_exporting()
@@ -30,6 +30,6 @@ class CrawlModulePipeline:
 
     def close_spider(self, spider):
         print(f'爬取完成, 共有{docid+1}条新闻')
-        self.count_file.write(str(docid+1)+'\n')
+        self.count_file.write('NEWS_COUNT '+str(docid+1)+'\n')
         self.json_exporter.finish_exporting()
         self.json_file.close()

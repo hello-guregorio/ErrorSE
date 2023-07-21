@@ -9,6 +9,8 @@
 #include "../IndexModule/ParallelSort.hh"
 #include "../IndexModule/SplitFile.hh"
 #include "../IndexModule/WordSpliter.hh"
+#include "../Server/ThreadPool.hh"
+#include "../Server/Net/InetAddress.hh"
 using namespace std::chrono;
 
 class TinyTimer {
@@ -40,6 +42,7 @@ int main() {
   // news.tps  <term, docid, tf>
   std::cout << "生成news.doclen和news.tps" << std::endl;
   GenDocLenAndTuples();
+  GenAvgDocLen();
   timer.PrintDelta();
   // 这一步切分news.tps, 生成splited下的小文件
   std::cout << "切分文件" << std::endl;
@@ -61,4 +64,27 @@ int main() {
   std::cout << "构建索引" << std::endl;
   BuildIndex();
   timer.PrintDelta();
+
+
+  //线程池测试
+  // ThreadPool pool(4);
+  // std::vector<std::future<int> > results;
+
+  // for (int i = 0; i < 8; ++i) {
+  //   results.emplace_back(pool.enqueue([i] {
+  //     std::cout << "hello " << i << std::endl;
+  //     std::this_thread::sleep_for(std::chrono::seconds(1));
+  //     std::cout << "world " << i << std::endl;
+  //     return i * i;
+  //   }));
+  // }
+
+  // for (auto&& result : results) std::cout << result.get() << ' ';
+  // std::cout << std::endl;
+
+  //InetAddress测试
+  // InetAddress ia("127.0.0.1",2333);
+  // std::cout<<ia.IP()<<std::endl;
+  // std::cout<<ia.Port()<<std::endl;
+  return 0;
 }

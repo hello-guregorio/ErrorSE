@@ -1,6 +1,3 @@
-# 构建
-cmake -S . -B build
-cmake --build build
 # 测试
 对316.9MiB的文件构建倒排索引各个步骤用时如下:
 
@@ -15,6 +12,8 @@ cmake --build build
 合并文件 用时68.0306秒
 
 构建索引 用时9.91235秒
+# 注意
+不要动info.txt,他会记录一些全局信息
 # data下各个文件作用
 - news.rawdata  二进制存储, 每行一个json格式的新闻
 - newscount.txt 记录新闻爬取个数

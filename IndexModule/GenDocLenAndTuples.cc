@@ -36,3 +36,22 @@ void GenDocLenAndTuples(const char* offsetPath, const char* tpsPath,
   tpsFile.close();
   offsetFile.close();
 }
+
+void GenAvgDocLen(const char* infoPath) {
+  std::fstream infoFile(infoPath, std::ios::app | std::ios::in | std::ios::out);
+  std::string name;
+  int fileCount;
+  infoFile >> name >> fileCount;
+  std::ifstream doclenFile("../data/news.doclen");
+  int docid;
+  double len;
+  double docAVGLen = 0;
+  while (doclenFile >> docid) {
+    doclenFile >> len;
+    docAVGLen += len;
+  }
+  docAVGLen /= static_cast<double>(fileCount);
+  infoFile << "DOC_AVG_LEN " << docAVGLen << '\n';
+  infoFile.close();
+  doclenFile.close();
+}
