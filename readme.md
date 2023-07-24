@@ -17,3 +17,5 @@
 # data下各个文件作用
 - news.rawdata  二进制存储, 每行一个json格式的新闻
 - newscount.txt 记录新闻爬取个数
+# 参考
+redis连接池 ZenoCP

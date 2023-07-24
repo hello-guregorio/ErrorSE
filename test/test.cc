@@ -9,8 +9,10 @@
 #include "../IndexModule/ParallelSort.hh"
 #include "../IndexModule/SplitFile.hh"
 #include "../IndexModule/WordSpliter.hh"
-#include "../Server/ThreadPool.hh"
+#include "../QueryModule/BM25.hh"
+#include "../QueryModule/RedisRAII.hh"
 #include "../Server/Net/InetAddress.hh"
+#include "../Server/ThreadPool.hh"
 using namespace std::chrono;
 
 class TinyTimer {
@@ -65,10 +67,9 @@ int main() {
   BuildIndex();
   timer.PrintDelta();
 
-
-  //线程池测试
-  // ThreadPool pool(4);
-  // std::vector<std::future<int> > results;
+  // 线程池测试
+  //  ThreadPool pool(4);
+  //  std::vector<std::future<int> > results;
 
   // for (int i = 0; i < 8; ++i) {
   //   results.emplace_back(pool.enqueue([i] {
@@ -82,9 +83,25 @@ int main() {
   // for (auto&& result : results) std::cout << result.get() << ' ';
   // std::cout << std::endl;
 
-  //InetAddress测试
-  // InetAddress ia("127.0.0.1",2333);
-  // std::cout<<ia.IP()<<std::endl;
-  // std::cout<<ia.Port()<<std::endl;
+  // InetAddress测试
+  //  InetAddress ia("127.0.0.1",2333);
+  //  std::cout<<ia.IP()<<std::endl;
+  //  std::cout<<ia.Port()<<std::endl;
+
+  // redis测试, 调用一次即可
+  RedisRAII rr;
+  // rr.StoreNewsOffset();
+  // rr.StoreDictOffset();
+  // rr.StoreDocLen();
+  std::cout << rr.GetDocLen(1) << std::endl;
+  std::cout << rr.GetNewsOffsetInfo(3) << std::endl;
+  std::cout << rr.GetDictOffsetInfo("00").first << std::endl;
+  std::cout << rr.GetDictOffsetInfo("00").second << std::endl;
+  std::cout << rr.SearchDoc(13) << std::endl;
+
+  // 检索测试
+  LoadInfo();
+  // std::cout << NEWS_COUNT << std::endl;
+  // std::cout << DOC_AVG_LEN << std::endl;
   return 0;
 }

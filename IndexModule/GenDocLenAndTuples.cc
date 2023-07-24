@@ -42,6 +42,9 @@ void GenAvgDocLen(const char* infoPath) {
   std::string name;
   int fileCount;
   infoFile >> name >> fileCount;
+  if (!infoFile.eof()) {
+    return;
+  }
   std::ifstream doclenFile("../data/news.doclen");
   int docid;
   double len;
