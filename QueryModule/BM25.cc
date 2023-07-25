@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -29,9 +30,9 @@ static inline double WordWeight(int qtf, int tf, int doclen, int df,
                                 double b = 0.75, double k1 = 1.5,
                                 double k3 = 1.5) {
   double weight = IDF(df);
-  double K = k1 * (1 - b + b * static_cast<double>(doclen) / DOC_AVG_LEN);
-  weight *= static_cast<double>(k1 + 1) * tf / (K + tf);
-  weight *= static_cast<double>(k3 + 1) * qtf / (k3 + qtf);
+  double K = k1 * (1 - b + b * doclen / DOC_AVG_LEN);
+  weight *= (k1 + 1) * tf / (K + tf);
+  weight *= (k3 + 1) * qtf / (k3 + qtf);
   return weight;
 }
 
@@ -69,6 +70,7 @@ std::vector<int> BM25(RedisRAII& redisRAII,
   for (auto& [term, qtf] : queryVec) {
     // get docid tf
     auto postingList = redisRAII.SearchWord(term);
+    // 倒排索引没有这个term对应权重就是0, 第二个for循环执行次数变为0
     int df = postingList.size();
     for (auto& [docid, tf] : postingList) {
       double doclen = redisRAII.GetDocLen(docid);
@@ -85,6 +87,7 @@ std::vector<int> BM25(RedisRAII& redisRAII,
   std::vector<int> ret(topK);
   for (int i = 0; i < topK; ++i) {
     ret[i] = vec[i].first;
+    std::cout << vec[i].second << std::endl;
   }
   return ret;
 }

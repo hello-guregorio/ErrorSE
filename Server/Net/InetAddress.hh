@@ -2,17 +2,18 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include <string_view>
+#include <string>
 
+using std::string;
 class InetAddress {
  public:
-  InetAddress(std::string_view ip, uint16_t port);
-  InetAddress(uint16_t port);
-  InetAddress(const sockaddr_in& sai);
-  sockaddr_in& GetSockAddr();
-  std::string IP() const;
-  uint16_t Port() const;
+  InetAddress(const string& Ip, unsigned short Port);
+  InetAddress(unsigned short Port);
+  InetAddress(const sockaddr_in& ser);
+  sockaddr_in* getAddressPtr();
+  string getIp() const;
+  unsigned short getPort() const;
 
  private:
-  sockaddr_in mSockAddr;
+  sockaddr_in _ser;
 };

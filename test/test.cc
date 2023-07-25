@@ -87,21 +87,24 @@ int main() {
   //  InetAddress ia("127.0.0.1",2333);
   //  std::cout<<ia.IP()<<std::endl;
   //  std::cout<<ia.Port()<<std::endl;
-
+  
+  // 检索测试
+  LoadInfo();
+  // std::cout << NEWS_COUNT << std::endl;
+  // std::cout << DOC_AVG_LEN << std::endl;
   // redis测试, 调用一次即可
   RedisRAII rr;
   // rr.StoreNewsOffset();
   // rr.StoreDictOffset();
   // rr.StoreDocLen();
-  std::cout << rr.GetDocLen(1) << std::endl;
-  std::cout << rr.GetNewsOffsetInfo(3) << std::endl;
-  std::cout << rr.GetDictOffsetInfo("00").first << std::endl;
-  std::cout << rr.GetDictOffsetInfo("00").second << std::endl;
-  std::cout << rr.SearchDoc(13) << std::endl;
+  // std::cout << rr.GetDocLen(1) << std::endl;
+  // std::cout << rr.GetNewsOffsetInfo(3) << std::endl;
+  // std::cout << rr.GetDictOffsetInfo("00").first << std::endl;
+  // std::cout << rr.GetDictOffsetInfo("00").second << std::endl;
+  // std::cout << rr.SearchDoc(13) << std::endl;
+  // for (int id : rr.SearchQuery("南开大学")) {
+  //   std::cout << rr.SearchDoc(id) << std::endl;
+  // }
 
-  // 检索测试
-  LoadInfo();
-  // std::cout << NEWS_COUNT << std::endl;
-  // std::cout << DOC_AVG_LEN << std::endl;
   return 0;
 }

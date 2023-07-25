@@ -1,15 +1,28 @@
 #include "RedisRAII.hh"
 
 #include <fstream>
+#include <regex>
+#include <string>
+#include <string_view>
+#include <vector>
 
 #include "BM25.hh"
+#include "Jieba.hpp"
+static const char* const DICT_PATH = "../ThirdParty/dict/jieba.dict.utf8";
+static const char* const HMM_PATH = "../ThirdParty/dict/hmm_model.utf8";
+static const char* const USER_DICT_PATH = "../ThirdParty/dict/user.dict.utf8";
+static const char* const IDF_PATH = "../ThirdParty/dict/idf.utf8";
+static const char* const STOP_WORD_PATH = "../ThirdParty/dict/stop_words.utf8";
 
 class RedisRAIIImpl {
  public:
+  RedisRAIIImpl()
+      : jieba(DICT_PATH, HMM_PATH, USER_DICT_PATH, IDF_PATH, STOP_WORD_PATH) {}
   redisContext* redisCTX;
   redisReply* reply;
   NewsOffsetLoader newsLoader;
   DictOffsetLoader dictLoader;
+  cppjieba::Jieba jieba;
 };
 
 RedisRAII::RedisRAII(const char* ip, int port)
@@ -113,9 +126,18 @@ std::vector<std::pair<int, int>> RedisRAII::SearchWord(std::string_view word) {
 }
 
 std::vector<int> RedisRAII::SearchQuery(const std::string& query, int topK) {
-  // 需要用rpc
   // std::vector<std::pair<std::string,int>> splitQuery(const std::string&
   // query) input query output queryVec
-  std::vector<std::pair<std::string, int>> queryVec;
-  return BM25(*this, queryVec, topK);
+  std::vector<std::pair<std::string, int>> termtfPairs;
+  std::vector<std::string> splitedTerms;
+  impl->jieba.Cut(query, splitedTerms);
+  std::sort(splitedTerms.begin(), splitedTerms.end());
+  for (auto& term : splitedTerms) {
+    if (termtfPairs.empty() || termtfPairs.back().first != term) {
+      termtfPairs.emplace_back(term, 1);
+    } else {
+      termtfPairs.back().second++;
+    }
+  }
+  return BM25(*this, termtfPairs, topK);
 }

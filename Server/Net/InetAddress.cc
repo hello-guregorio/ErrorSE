@@ -2,27 +2,24 @@
 
 #include <cstring>
 #include <string>
-InetAddress::InetAddress(std::string_view ip, uint16_t port) {
-  memset(&mSockAddr, 0, sizeof(mSockAddr));
-  mSockAddr.sin_family = AF_INET;
-  mSockAddr.sin_port = htons(port);
-  mSockAddr.sin_addr.s_addr = inet_addr(ip.data());
+InetAddress::InetAddress(const string& Ip, unsigned short Port) {
+  bzero(&_ser, sizeof(_ser));
+  _ser.sin_addr.s_addr = inet_addr(Ip.c_str());
+  _ser.sin_port = htons(Port);
+  _ser.sin_family = AF_INET;
 }
 
-InetAddress::InetAddress(uint16_t port) {
-  memset(&mSockAddr, 0, sizeof(mSockAddr));
-  mSockAddr.sin_family = AF_INET;
-  mSockAddr.sin_addr.s_addr = INADDR_ANY;
+InetAddress::InetAddress(unsigned short Port) {
+  bzero(&_ser, sizeof(_ser));
+  _ser.sin_addr.s_addr = INADDR_ANY;  // localhost
+  _ser.sin_port = htons(Port);
+  _ser.sin_family = AF_INET;
 }
 
-InetAddress::InetAddress(const sockaddr_in& sai) {
-  mSockAddr = sai;
-}
+InetAddress::InetAddress(const sockaddr_in& ser) { _ser = ser; }
 
-sockaddr_in& InetAddress::GetSockAddr() { return this->mSockAddr; }
+sockaddr_in* InetAddress::getAddressPtr() { return &_ser; }
 
-std::string InetAddress::IP() const {
-  return std::string(inet_ntoa(mSockAddr.sin_addr));
-}
+string InetAddress::getIp() const { return string(inet_ntoa(_ser.sin_addr)); }
 
-uint16_t InetAddress::Port() const { return ntohs(mSockAddr.sin_port); }
+unsigned short InetAddress::getPort() const { return ntohs(_ser.sin_port); }
